@@ -69,7 +69,7 @@ class MessageQueue
 
     /**
      * Get the bit-mapped processing flag
-     * @returns integer
+     * @return integer
      */
     public function getProcessingFlag($as_string = false)
     {
@@ -98,7 +98,7 @@ class MessageQueue
     /**
      * Set the bit-mapped processing flag
      * @param int flag
-     * @returns \LWare\Queue\MessageQueue
+     * @return \LWare\Queue\MessageQueue
      */
     public function setProcessingFlag( $flag = self::CONTINUE_PROCESSING )
     {
