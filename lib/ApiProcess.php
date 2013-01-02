@@ -281,7 +281,7 @@ class ApiProcess
 
     /**
      * Execute will perform the actual execution of the functions.
-     * @returns \Lware\Queue\ApiProcess
+     * @return \Lware\Queue\ApiProcess
      */
     protected function execute( $clear = true )
     {

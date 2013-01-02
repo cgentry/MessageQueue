@@ -169,7 +169,7 @@ class MessageDaemon extends MessageQueue {
     /**
      * Process all the messages that come in in a loop. To cancel, the routine must return a HALT_DAEMON
      * @param integer $options
-     * @returns bool  True if we ended the run, false if we terminated on error
+     * @return bool  True if we ended the run, false if we terminated on error
      */
     public function run( $options = \AMQP_NOPARAM )
     {
