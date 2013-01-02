@@ -18,9 +18,9 @@ namespace LWare\Queue;
  */
 
 
-require_once __DIR__ . '/../ApiProcess.php' ;
-require_once __DIR__ . '/../MessageQueue.php' ;
-require_once __DIR__ . '/../MessageDaemon.php';
+require_once __DIR__ . '/../lib/ApiProcess.php' ;
+require_once __DIR__ . '/../lib/MessageQueue.php' ;
+require_once __DIR__ . '/../lib/MessageDaemon.php';
 
 class MessageDaemonTest extends \PHPUnit_Framework_TestCase
 {
@@ -261,7 +261,7 @@ class MessageDaemonTest extends \PHPUnit_Framework_TestCase
         );
         $appid = $this->appid . '_' . __LINE__ ;
         $qd = new MessageDaemon();
-        $qd->setDebug( true )
+        $qd->setDebug( false )
            ->setConnectionString( 'amqp://127.0.0.1' )
            ->createExchange( $exParm )
            ->createQueue( array( 'name'=> 'qtest' , 'bind' => array( 'xtest' , 'ktest') , 'declare'=>true) )
