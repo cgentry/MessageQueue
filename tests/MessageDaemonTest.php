@@ -124,15 +124,6 @@ class MessageDaemonTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \LWare\Queue\MessageDaemon::match
-     * @expectedException \LWare\Queue\MsgExceptionApi
-     */
-    public function testMatch()
-    {
-        $this->object->match('test', function(){} );
-    }
-
-    /**
      * @covers \LWare\Queue\MessageDaemon::always
      *@covers \LWare\Queue\MessageDaemon::_addFunction
      */
@@ -634,7 +625,98 @@ class MessageDaemonTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 1, $before );
         $this->assertEquals( 1, $after );
     }
-    
+    /**
+     * This will test running with one match and a 'norun' non-match.
+     * @covers \LWare\Queue\MessageDaemon::runOnce
+     * @covers \LWare\Queue\MessageDaemon::_processMessage
+     * @covers \LWare\Queue\ApiProcess::before
+     * @covers \LWare\Queue\ApiProcess::after
+     * @covers \LWare\Queue\ApiProcess::testAndRun
+     * @covers \LWare\Queue\ApiProcess::execute
+     * @covers \LWare\Queue\ApiProcess::getArguments
+     * @covers \LWare\Queue\ApiProcess::doGetArguments
+     * @covers \LWare\Queue\MessageDaemon::match
+     */
+    public function testRunOnceMatchOnly()
+    {
+        $goodrun = false;
+
+        $exParm = array(
+            'name' => 'xtest'  ,
+            'type' => \AMQP_EX_TYPE_DIRECT
+        );
+        $appid = $this->appid . '_' . __LINE__ ;
+        $qd = new MessageDaemon();
+        $qd->setDebug( false )
+           ->setConnectionString( 'amqp://127.0.0.1' )
+           ->createExchange( $exParm )
+           ->createQueue( array( 'name'=> 'qtest' , 'bind' => array( 'xtest' , 'ktest') ) )
+           ->match( '/^' . $this->appid . '.*$/'   ,
+                        function(\AMQPQueue $q , \AMQPEnvelope $env ) use ( &$goodrun)
+                        {
+                            $goodrun = true;
+                            $q->ack( $env->getDeliveryTag() );
+
+                        }
+             );
+
+           
+        $qd->setAppId( $appid  )
+            ->publish( 'xtest' , 'message body' , 'ktest' );
+        $qd->runOnce();
+        $this->assertTrue(  $goodrun );
+    }
+        /**
+     * This will test running with one match and a 'norun' non-match.
+     * @covers \LWare\Queue\MessageDaemon::runOnce
+     * @covers \LWare\Queue\MessageDaemon::_processMessage
+     * @covers \LWare\Queue\ApiProcess::before
+     * @covers \LWare\Queue\ApiProcess::after
+     * @covers \LWare\Queue\ApiProcess::testAndRun
+     * @covers \LWare\Queue\ApiProcess::execute
+     * @covers \LWare\Queue\ApiProcess::getArguments
+     * @covers \LWare\Queue\ApiProcess::doGetArguments
+     * @covers \LWare\Queue\MessageDaemon::match
+     */
+    public function testRunOnceMatchAndAppIDBoth()
+    {
+        $patternrun = false;
+        $apprun = false;
+
+        $exParm = array(
+            'name' => 'xtest'  ,
+            'type' => \AMQP_EX_TYPE_DIRECT
+        );
+        $appid = $this->appid . '_' . __LINE__ ;
+        $qd = new MessageDaemon();
+        $qd->setDebug( false )
+           ->setConnectionString( 'amqp://127.0.0.1' )
+           ->createExchange( $exParm )
+           ->createQueue( array( 'name'=> 'qtest' , 'bind' => array( 'xtest' , 'ktest') ) )
+           ->match( '/^' . $this->appid . '.*$/'   ,
+                        function(\AMQPQueue $q , \AMQPEnvelope $env ) use ( &$patternrun)
+                        {
+                            $patternrun = true;
+                            $q->ack( $env->getDeliveryTag() );
+
+                        }
+             );
+
+        $qd->appId( $appid  ,
+                        function(\AMQPQueue $q , \AMQPEnvelope $env ) use ( &$apprun )
+                        {
+                            $q->ack( $env->getDeliveryTag() );
+                            $apprun = true;
+                        }
+             );
+
+        $qd->setAppId( $appid  )
+            ->publish( 'xtest' , 'message body' , 'ktest' );
+        $qd->runOnce();
+        $this->assertTrue( $patternrun );
+        $this->assertTrue( $apprun );
+    }
+
     /*
      * ====================================================
      * Test the HALT feature. You can:

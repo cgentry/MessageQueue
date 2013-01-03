@@ -110,6 +110,7 @@ class MessageDaemon extends MessageQueue {
 
     private function _addFunction( &$where, $type , $name, $function, $tag )
     {
+        $name = trim( $name );
         $tag = ( null === $tag ? $name : $tag );
 
         $api = new ApiProcess( $name, $type , $function );
@@ -122,12 +123,22 @@ class MessageDaemon extends MessageQueue {
     }
     /**
      * @todo Implement. This is a skeleton routine
-     * @param string  name to attach to the function
+     * @param string Regular express to match against
      * @param type $function to execute
      * @return \LWare\Queue\ApiProcess
      */
-    public function match( $match , $function )
+    public function match( $regex , $function , $tag = NULL )
     {
+        /*
+         * make sure the 'match' has slashes at the start and end. 
+         */
+        return $this->_addFunction(
+                $this->_api ,
+                ApiProcess::API_REGEX,
+                $regex ,
+                $function ,
+                $tag );
+
         require_once __DIR__ . '/MessageExceptions.php' ;
         throw new MsgExceptionApi( 'Match is not yet implemented' );     
     }

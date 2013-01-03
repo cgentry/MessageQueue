@@ -271,6 +271,12 @@ class ApiProcess
                 break;
 
             case self::API_REGEX :          // NOT YET IMPLEMENTED
+                if( preg_match( $this->_match , $appId ) )
+                {
+                    $this->printDebug( "(testAndRun) RUN with regex" );
+                    $this->execute( $clear );
+                    return true;
+                }
             default:
                 break;
         }
