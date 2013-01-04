@@ -1,10 +1,10 @@
 {
-    "name"        : "LWare/Queue" ,
+    "name"        : "cgentry/message_queue" ,
     "description" : "Simple message queue interface. Includes a daemon system similar to SILEX" ,
-    "license"     : "LGPL" ,
-    "authors"     : [ { "name": "Charles Gentry" } ]
+    "license"     : "LGPL-3.0+" ,
+    "authors"     : [ { "name": "Charles Gentry" } ] ,
     "bin"         : ["bin/clamp.php"],
-    "autoload"    : { "psr-0" : { "LWare\\Queue" : "lib/" } }
+    "autoload"    : { "psr-0" : { "LWare\\Queue" : "lib/" } },
     "require"     : {
         "php": ">5.3.3" ,
 	"ext-amqp" : "*"
