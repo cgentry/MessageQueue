@@ -18,9 +18,9 @@ namespace LWare\Queue;
  */
 
 
-require_once __DIR__ . '/../lib/ApiProcess.php' ;
-require_once __DIR__ . '/../lib/MessageQueue.php' ;
-require_once __DIR__ . '/../lib/MessageDaemon.php';
+require_once __DIR__ . '/../lib/LWare/Queue/ApiProcess.php' ;
+require_once __DIR__ . '/../lib/LWare/Queue/MessageQueue.php' ;
+require_once __DIR__ . '/../lib/LWare/Queue/MessageDaemon.php';
 
 class MessageDaemonTest extends \PHPUnit_Framework_TestCase
 {
