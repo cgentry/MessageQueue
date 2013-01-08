@@ -28,7 +28,7 @@ MessageQueue
 <pre> $srv = new MessageQueue();</pre>
 Instantiate a new message queue object.
 
-<pre>$srv->setConnection( ‘amqp://host’ );</pre>
+<pre>$srv->setConnectionString( ‘amqp://host’ );</pre>
 Set the connection string for the host. This is split and handled for you in the object rather than having to set multiple values. The values are:
 amqp://username:password@host:port/vhost
 Any of these may be missing and will be filled in by the PHP defaults. (See PHP documentation at  http://php.net/manual/en/amqp.configuration.php .
