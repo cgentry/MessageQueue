@@ -30,8 +30,8 @@
     You should have received a copy of the GNU Lesser Public License
     along with LWare\Queue.  If not, see <http://www.gnu.org/licenses/>.
  */
-require_once __DIR__ . '/../lib/ApiProcess.php' ;
-require_once __DIR__ .'/../lib/MessageQueue.php' ;
+require_once __DIR__ . '/../lib/LWare/Queue/ApiProcess.php' ;
+require_once __DIR__ . '/../lib/LWare/Queue/MessageQueue.php' ;
 
 $msgQ    = new \LWare\Queue\MessageQueue();
 $debug  = false;
