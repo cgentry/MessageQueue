@@ -41,6 +41,7 @@ $put    = NULL;
 $text   = NULL;
 $type   = \AMQP_EX_TYPE_DIRECT ;
 $ack    = AMQP_AUTOACK;
+$attributes = array();
 /**
  * @var \AMQPExchange
  */
@@ -54,6 +55,11 @@ for( $i=1 ; $i< $argc ; $i++ )
 {
     switch ( $argv[ $i ])
     {
+    case '--app' :
+    case '--appid':
+        $attributes[ 'app_id' ] = $argv[ ++$i ];
+        break;
+
         case '--host' :
             $msgQ->setConnectionString( $argv[ ++$i ] );
             break;
@@ -146,10 +152,11 @@ if( $put )
         print "Host: " . $msgQ->getConnection()->getHost() . "\n";
         print "Channel is connected: " . ( $msgQ->getChannel()->isConnected() ? 'True' : 'False' ) . "\n";
         print "Connection is connected: " . ( $msgQ->getConnection()->isConnected() ? 'True' : 'False' ) . "\n";
+        print "Application id is: " . ( isset( $attributes[ 'app_id' ] ) ? '(not set)' : $attributes[ 'app_id' ] ) . "\n";
 
         print "Publish text\n";
     }
-    $rtn = $ex->publish( $text, $route );
+    $rtn = $ex->publish( $text, $route , AMQP_NOPARAM , $attributes );
     if ( $debug )
     {
         print "\nDone. Published '$text' on '$exname'  and '$route'\n";
@@ -168,8 +175,9 @@ function help()
     print <<<HELP
 Command line interface for AMQP processing:
 
-clamp --host amqp://host --debug --exchange name --queue name --route key --message text --send --receive --type type
+clamp --host amqp://host --debug --exchange name --queue name --route key --appid value --message text --send --receive --type type
 
+      --appid value     Set the application id in the header
       --host connection This is formatted as a URI amqp://username:passwword@host:port/vhost
                         Each part can be left out and defaults will be used.
       --debug           Turn debugging on. Default is off.
