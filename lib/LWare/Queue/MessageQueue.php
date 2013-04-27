@@ -399,8 +399,8 @@ class MessageQueue
          */
         static $optionOrder = array( 
                     'name'       => true , 
-                    'declare'    => false ,
                     'flags'      => true ,
+                    'declare'    => false ,
                     'argument'   => true,
                     'arguments'  => true,
                     'bind'       => true ,
