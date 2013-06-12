@@ -311,23 +311,35 @@ class MessageQueue
                     'argument' => true ,
                     'arguments'=> true ,
                     'declare'  => false,
+                    'declareExchange'  => false,
 
                 );
+        
+        $parms = array_change_key_case($parms, CASE_LOWER );
         
         if( ! isset( $parms[ 'name' ] ) )
         {
             require_once __DIR__ . '/MessageExceptions.php' ;
             throw new MsgExceptionExchange( 'No name for exchange' );
         }
+        
         $name = $parms[ 'name' ];
+        $ex   =  new \AMQPExchange( $this->getChannel() );
+        $newVersion = method_exists($ex, 'declareExchange');
+        $nameToUse  = ( $newVersion ? 'declareExchange' : 'declare' );
 
-        if( ! isset( $parms[ 'declare' ]))
-        {
-            $parms[ 'declare' ] = '';
+        if( $newVersion && isset( $parms['declare'])){
+            if( ! isset( $parms[$nameToUse])){
+                $parms[$nameToUse]=$parms['declare'];
+            }
+            unset( $parms['declare']);
         }
-        $ex =  new \AMQPExchange( $this->getChannel() );
-        $parms = array_change_key_case($parms, CASE_LOWER );
-
+        
+        if( ! isset( $parms[ $nameToUse ]))
+        {
+            $parms[ $nameToUse ] = '';
+        }
+        
         $this->callMethods( $ex , $parms , $optionOrder);
 
         $this->_exchange[ $name ] = array(
@@ -398,28 +410,44 @@ class MessageQueue
          * These are the keys and order that are used for queue options
          */
         static $optionOrder = array( 
-                    'name'       => true , 
-                    'flags'      => true ,
-                    'declare'    => false ,
-                    'argument'   => true,
-                    'arguments'  => true,
-                    'bind'       => true ,
-                    'unbind'     => true ,
-                    'testest'    => false, /*Doesn't exist...just for testing*/
+                    'name'         => true , 
+                    'flags'        => true ,
+                    'declare'      => false ,
+		    'declareQueue' => false,
+                    'argument'     => true,
+                    'arguments'    => true,
+                    'bind'         => true ,
+                    'unbind'       => true ,
+                    'testest'      => false, /*Doesn't exist...just for testing*/
                 );
+        
+        $parms = array_change_key_case($parms, CASE_LOWER );
         
         if( ! isset( $parms[ 'name' ] ) )
         {
             require_once __DIR__ . '/MessageExceptions.php' ;
             throw new MsgExceptionQueue( 'No name for queue' );
         }
-        // We require a declare in order for it to be created properly
-        if( ! isset( $parms[ 'declare' ]))
-        {
-            $parms[ 'declare' ] = '';
-        }
+        
         $q = new \AMQPQueue( $this->getChannel() );
-        $parms = array_change_key_case($parms, CASE_LOWER );
+        
+        // Library 1.0.10 and 1.2 compatibility
+	$newVersion = method_exists($q, 'declareQueue');
+        $nameToUse  = ( $newVersion ? 'declareQueue' : 'declare' );
+
+        if( $newVersion && isset( $parms['declare'])){
+            if( ! isset( $parms[$nameToUse])){
+                $parms[$nameToUse]=$parms['declare'];
+            }
+            unset( $parms['declare']);
+        }
+        
+        if( ! isset( $parms[ $nameToUse ]))
+        {
+            $parms[ $nameToUse ] = '';
+        }
+        
+        
         
         $this->callMethods( $q , $parms , $optionOrder );
         
