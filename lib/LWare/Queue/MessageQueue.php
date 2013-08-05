@@ -10,7 +10,7 @@ namespace LWare\Queue;
  * @category  Queue
  * @package   LWare
  * @copyright Copyright (c) 2012 
- * @version   1.0
+ * @version   1.0.1
  * @since     2012-Dec-11
  */
 
@@ -543,20 +543,23 @@ class MessageQueue
                 /**
                  * Call the setter function with the parameters passed
                  */
-                if (null !== $setter)               // Setter function exists
-                {
-                    $this->printDebug("($calling) $type: $setter ($plist)\n" );
-                    if ($hasParms)
-                    {
+                if (null !== $setter) {               // Setter function exists
+                    reset($parm);                 // force a reset of the index
+                    // If we have an array-within-array, we are going to do
+                    // an itertive call.
+                    if (is_array($parm) && is_array($parm[key($parm)])) {
+                        $this->printDebug(" ... multiple interations. Calling each");
+                        foreach (array_keys($parm) as $key) {
+                            $plist = join(',', $parm[$key]);
+                            $this->printDebug("($calling) $type: $setter ($plist)\n");
+                            call_user_func_array(array($obj, $setter), $parm[$key]);
+                        }
+                    } else {
                         call_user_func_array(array($obj, $setter), $parm);
-                    } else
-                    {
-                        $obj->$setter();
                     }
-                }else{
-                    
-                    $this->printDebug( "(ignore) $type: $method ($plist)\n" );
-                    
+                } else {
+
+                    $this->printDebug("(ignore) $type: $method ($plist)\n");
                 }
             }
         }
