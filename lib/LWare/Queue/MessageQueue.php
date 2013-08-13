@@ -544,20 +544,24 @@ class MessageQueue
                  * Call the setter function with the parameters passed
                  */
                 if (null !== $setter) {               // Setter function exists
-                    if( is_array($parm )){
-                        reset($parm);                 // force a reset of the index
-                    }
-                    // If we have an array-within-array, we are going to do
-                    // an itertive call.
-                    if (is_array($parm) && is_array($parm[key($parm)])) {
-                        $this->printDebug(" ... multiple interations. Calling each");
-                        foreach (array_keys($parm) as $key) {
-                            $plist = join(',', $parm[$key]);
-                            $this->printDebug("($calling) $type: $setter ($plist)\n");
-                            call_user_func_array(array($obj, $setter), $parm[$key]);
+                    if (!$hasParms) {
+                        $this->printDebug("($calling) $type: $setter ($plist)\n");
+                        call_user_func(array($obj, $setter));
+                        
+                    } else /* always an array */
+                        reset($parm);               // force a reset of the index
+                        // If we have an array-within-array, we are going to do
+                        // an itertive call.
+                        if ( is_array($parm[key($parm)])) {
+                            $this->printDebug(" ... multiple interations. Calling each");
+                            foreach (array_keys($parm) as $key) {
+                                $plist = join(',', $parm[$key]);
+                                $this->printDebug("($calling) $type: $setter ($plist)\n");
+                                call_user_func_array(array($obj, $setter), $parm[$key]);
+                            }
+                        } else {
+                            call_user_func_array(array($obj, $setter), $parm);
                         }
-                    } else {
-                        call_user_func_array(array($obj, $setter), $parm);
                     }
                 } else {
 
