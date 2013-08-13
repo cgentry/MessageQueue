@@ -548,11 +548,12 @@ class MessageQueue
                         $this->printDebug("($calling) $type: $setter ($plist)\n");
                         call_user_func(array($obj, $setter));
                         
-                    } else /* always an array */
+                    } else /* always an array */ {
+                        
                         reset($parm);               // force a reset of the index
                         // If we have an array-within-array, we are going to do
                         // an itertive call.
-                        if ( is_array($parm[key($parm)])) {
+                        if (is_array($parm[key($parm)])) {
                             $this->printDebug(" ... multiple interations. Calling each");
                             foreach (array_keys($parm) as $key) {
                                 $plist = join(',', $parm[$key]);
@@ -570,4 +571,5 @@ class MessageQueue
             }
         }
     }
+
 }
