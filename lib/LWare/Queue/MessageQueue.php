@@ -544,7 +544,9 @@ class MessageQueue
                  * Call the setter function with the parameters passed
                  */
                 if (null !== $setter) {               // Setter function exists
-                    reset($parm);                 // force a reset of the index
+                    if( is_array($parm )){
+                        reset($parm);                 // force a reset of the index
+                    }
                     // If we have an array-within-array, we are going to do
                     // an itertive call.
                     if (is_array($parm) && is_array($parm[key($parm)])) {
