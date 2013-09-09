@@ -200,7 +200,7 @@ class MessageDaemon extends MessageQueue {
                 $counter++;
             }
         }
-        error_log( "__CLASS__ . '; Exception occured and too many retries: " 
+        error_log( __CLASS__ . "; Exception occured and too many retries: " 
             . $e->getMessage() . ' @' . __LINE__ );
         throw $e;
     }
@@ -238,7 +238,8 @@ class MessageDaemon extends MessageQueue {
                 $counter++;
             }
         }
-        error_log( "Exception occured and too many retries: " . $e->getMessage() );
+        error_log( __CLASS__ . "; Exception occured and too many retries: " 
+            . $e->getMessage() . ' @' . __LINE__ );
         return false;
     }
 
